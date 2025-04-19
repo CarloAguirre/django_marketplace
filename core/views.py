@@ -1,11 +1,16 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login
-from .models import Direccion, Rol
+from .models import Direccion, Rol, Carrito, CarritoProducto, Producto
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 from .models import Producto, Categoria
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse, HttpResponseServerError
+from django.views.decorators.http import require_POST
+import json
+
 
 User = get_user_model()
 
@@ -15,7 +20,7 @@ User = get_user_model()
 def index(request):
 	return render(request, 'core/index.html')
 
-def login(request):
+def login_view(request):
     if request.user.is_authenticated:
         return redirect('perfil')
 
@@ -89,7 +94,10 @@ def registro(request):
 
 
 def productos(request):
-	return render(request, 'core/productos.html')
+    lista_productos = Producto.objects.all()
+    return render(request, 'core/productos.html', {
+        'productos': lista_productos
+    })
 
 def categorias(request):
 	return render(request, 'core/categorias.html')
@@ -143,5 +151,118 @@ def nuevo_producto(request):
 def categoria(request):
 	return render(request, 'core/categoria.html')
 
-def producto(request):
-	return render(request, 'core/producto.html')
+def producto(request, id):
+    producto = get_object_or_404(Producto, id=id)
+    return render(request, 'core/producto.html', {'producto': producto})
+
+
+@csrf_exempt
+def actualizar_producto(request, id):
+    if request.method == 'POST':
+        producto = get_object_or_404(Producto, id=id)
+        data = json.loads(request.body)
+        producto.nombre = data.get('nombre', producto.nombre)
+        producto.stock = data.get('stock', producto.stock)
+        producto.precio = data.get('precio', producto.precio)
+        producto.save()
+        return JsonResponse({'status': 'ok'})
+
+
+@require_POST
+def eliminar_producto(request, id):
+    producto = get_object_or_404(Producto, id=id)
+    producto.delete()
+    return redirect('perfil')
+
+@csrf_exempt
+@require_POST
+@login_required
+def agregar_al_carrito(request):
+    try:
+        producto_id = request.POST.get("producto_id")
+        cantidad = int(request.POST.get("cantidad", 1))
+
+        producto = get_object_or_404(Producto, id=producto_id)
+        carrito, _ = Carrito.objects.get_or_create(usuario=request.user, estado='A')
+
+        item, creado = CarritoProducto.objects.get_or_create(
+            carrito=carrito,
+            producto=producto,
+            defaults={'cantidad': cantidad}
+        )
+
+        if not creado:
+            item.cantidad += cantidad
+            item.save()
+
+        total_items = CarritoProducto.objects.filter(carrito=carrito).count()
+        return JsonResponse({"ok": True, "total_items": total_items})
+    
+    except Exception as e:
+        print("⚠️ Error en agregar_al_carrito:", e)
+        return JsonResponse({"ok": False, "error": str(e)}, status=500)
+
+
+@login_required
+def obtener_carrito(request):
+    carrito = Carrito.objects.filter(usuario=request.user, estado='A').first()
+    productos = []
+
+    if carrito:
+        for item in carrito.carritoproducto_set.select_related('producto'):
+            productos.append({
+                "id": item.producto.id,
+                "nombre": item.producto.nombre,
+                "precio": float(item.producto.precio),
+                "cantidad": item.cantidad,
+                "imagen": item.producto.imagen.url if item.producto.imagen else ""
+            })
+
+    return JsonResponse({"productos": productos})
+
+@ login_required
+def listar_carrito(request):
+    carrito = Carrito.objects.filter(usuario=request.user, estado='A').first()
+    if not carrito:
+        return JsonResponse({'items': [], 'total_items': 0})
+
+    items = []
+    total_items = 0
+
+    for cp in CarritoProducto.objects.filter(carrito=carrito):
+        items.append({
+            'id'      : cp.producto.id,                          # ← aquí
+            'nombre'  : cp.producto.nombre,
+            'precio'  : float(cp.producto.precio),
+            'cantidad': cp.cantidad,
+            'imagen'  : cp.producto.imagen.url if cp.producto.imagen else ""
+        })
+        total_items += cp.cantidad
+
+    return JsonResponse({'items': items, 'total_items': total_items})
+
+
+@require_POST
+@login_required
+def modificar_cantidad_carrito(request):
+    producto_id = request.POST.get("producto_id")
+    cantidad = int(request.POST.get("cantidad"))
+
+    producto = get_object_or_404(Producto, id=producto_id)
+    carrito = get_object_or_404(Carrito, usuario=request.user, estado="A")
+    item = get_object_or_404(CarritoProducto, carrito=carrito, producto=producto)
+
+    item.cantidad = cantidad
+    item.save()
+
+    return JsonResponse({"ok": True})
+
+
+@require_POST
+@login_required
+def eliminar_producto_carrito(request):
+    producto_id = request.POST.get("producto_id")
+    carrito = get_object_or_404(Carrito, usuario=request.user, estado="A")
+    CarritoProducto.objects.filter(carrito=carrito, producto_id=producto_id).delete()
+    total_items = CarritoProducto.objects.filter(carrito=carrito).count()
+    return JsonResponse({"ok": True, "total_items": total_items})
