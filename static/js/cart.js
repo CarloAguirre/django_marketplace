@@ -5,12 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const cartContent = document.querySelector(".cart-content")
     const totalPriceElement = document.querySelector(".total-price")
     const productContainer = document.querySelector(".product-content")
-  
-    // Mostrar u ocultar el carrito
+
     cartIcon.addEventListener("click", () => cart.classList.add("active"))
     cartClose.addEventListener("click", () => cart.classList.remove("active"))
-  
-    // Delegar evento "Añadir al carrito"
     if (productContainer) {
       productContainer.addEventListener("click", (event) => {
         if (event.target.classList.contains("addCart")) {
@@ -28,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
               .then(res => res.json())
               .then(data => {
                 if (data.ok) {
-                  alert("✅ Producto añadido al carrito")
+                  alert("Producto añadido al carrito")
                   updateCartCount(data.total_items)
                   loadCartContent()
                   refreshCartBadge()  

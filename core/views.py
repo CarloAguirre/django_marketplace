@@ -100,7 +100,18 @@ def productos(request):
     })
 
 def categorias(request):
-	return render(request, 'core/categorias.html')
+    todas = Categoria.objects.all()
+    return render(request, 'core/categorias.html', {'categorias': todas})
+
+# core/views.py
+def categoria(request, id, slug):
+    categoria = get_object_or_404(Categoria, id=id)
+    productos = Producto.objects.filter(categoria=categoria)
+    return render(request, 'core/categoria.html',{
+        'categoria': categoria,
+        'productos': productos
+    })
+
 
 @login_required
 def perfil(request):
@@ -148,8 +159,6 @@ def nuevo_producto(request):
         'categorias': categorias
     })
 
-def categoria(request):
-	return render(request, 'core/categoria.html')
 
 def producto(request, id):
     producto = get_object_or_404(Producto, id=id)
@@ -220,8 +229,11 @@ def obtener_carrito(request):
 
     return JsonResponse({"productos": productos})
 
-@ login_required
+
 def listar_carrito(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'items': [], 'total_items': 0})
+
     carrito = Carrito.objects.filter(usuario=request.user, estado='A').first()
     if not carrito:
         return JsonResponse({'items': [], 'total_items': 0})
@@ -229,17 +241,18 @@ def listar_carrito(request):
     items = []
     total_items = 0
 
-    for cp in CarritoProducto.objects.filter(carrito=carrito):
+    for item in CarritoProducto.objects.filter(carrito=carrito):
         items.append({
-            'id'      : cp.producto.id,                          # ← aquí
-            'nombre'  : cp.producto.nombre,
-            'precio'  : float(cp.producto.precio),
-            'cantidad': cp.cantidad,
-            'imagen'  : cp.producto.imagen.url if cp.producto.imagen else ""
+            'id':       item.producto.id,
+            'nombre':   item.producto.nombre,
+            'precio':   float(item.producto.precio),
+            'cantidad': item.cantidad,
+            'imagen':   item.producto.imagen.url if item.producto.imagen else ""
         })
-        total_items += cp.cantidad
+        total_items += item.cantidad
 
     return JsonResponse({'items': items, 'total_items': total_items})
+
 
 
 @require_POST

@@ -11,31 +11,46 @@
     <title>Categorías</title>
   </head>
   <body>
-    <!-- menu principal -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container" style="margin-bottom: -2rem;">
-        <a class="navbar-brand" href="../index.html">
-              <img src="{% static 'imgs/logo.png' %}" alt="logo" height="40">
-          </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-              <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-              <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
-                <li class="nav-item"><a class="nav-link" href="categorias">Categorías</a></li>
-                <li class="nav-item"><a class="nav-link" href="productos">Productos</a></li>
-                <li class="nav-item"><a class="nav-link" href="registro">Registro</a></li>
-                <li class="nav-item"><a class="nav-link" href="perfil">Perfil</a></li>
-                <li class="nav-item"><a class="nav-link" href="login">Login</a></li>
-              </ul>
-              <div class="icon-cart ms-3">
-                  <i class="ri-shopping-cart-line"></i>
-                  <span class="cart-item-count"></span>
-              </div>
-          </div>
-      </div>
-  </nav>
+   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container" style="margin-bottom: -2rem;">
+    <a class="navbar-brand" href="/">
+      <img src="{% static 'imgs/logo.png' %}" alt="logo" height="40">
+    </a>
+    <button class="navbar-toggler" …></button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="/categorias">Categorías</a></li>
+        <li class="nav-item"><a class="nav-link" href="/productos">Productos</a></li>
+        <li class="nav-item"><a class="nav-link" href="/registro">Registro</a></li>
+
+        {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="/perfil">Perfil</a></li>
+        {% endif %}
+
+        {% if not user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+        {% else %}
+          <li class="nav-item">
+            <form method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button class="nav-link btn btn-link" style="color: white !important; text-decoration:none;">Cerrar sesión</button>
+            </form>
+          </li>
+        {% endif %}
+      </ul>
+
+      {% if user.is_authenticated %}
+        <div class="icon-cart ms-3">
+          <i class="ri-shopping-cart-line"></i>
+          <span class="cart-item-count"></span>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</nav>
+
 <div class="cart">
   <h2 class="cart-title">Carrito</h2>
   <div class="cart-content"></div>
@@ -50,46 +65,32 @@
 </div>
 
     <div class="category-router">
-      <a href="../categorias/todas.html">Categorias</a> / Atari
+      <a href="/categorias">Categorias</a> / {{categoria}}
      </div>
-    <h1>Productos Atari</h1>
+    <h1>Productos {{categoria}}</h1>
 
-  <main class="category-products__container">
-    <!-- Caja 1 -->
-      <div class="container">
-        <div class="box">
-          <div class="cont-img">
-            <img
-            src="{% static 'imgs/Adventure_Atari.png' %}"
-            class="cont-img"
-            />
-          <div class="img-overlay">
-            <div class="img-title">
-              <a href="../productos/atari/atari_01.html" class="nav-link">Adventurer</a>
+    <main class="category-products__container">
+        {% for producto in productos %}
+          <div class="product-box">
+            <div class="img-box">
+              <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" />
             </div>
-            <p class="img-description">Estado: Usada</p>
-            <p class="img-description">$19.990</p>
-            </div>
-          </div>
-        </div>
-    <!-- Caja 2 -->
-        <div class="box">
-          <div class="cont-img">
-            <img 
-          src="{% static 'imgs/atari-2600-png-2045363.png' %}"
-          class="cont-img"
-          />
-          <div class="img-overlay">
-            <div class="img-title">
-              <a href="../productos/atari/atari_02.html" class="nav-link">Joust</a>
-            </div>
-            <p class="img-description">Videojuego Atari</p>
-            <p class="img-description">$24.990</p>
+            <a href="{% url 'producto' producto.id %}">
+              <h2 class="name">{{ producto.nombre }}</h2>
+            </a>
+            <p class="img-description">{{ producto.descripcion }}</p>
+            <div class="price-and-cart">
+              <span class="price">${{ producto.precio }}</span>
+              <button class="addCart"
+                      data-producto-id="{{ producto.id }}">
+                Añadir al carrito
+              </button>
             </div>
           </div>
-        </div>
-   
-  </main>
+        {% empty %}
+          <p class="text-white">No hay productos en esta categoría.</p>
+        {% endfor %}
+      </main>
     <!-- inicio footer -->
     <footer>
       <p>RetroPlay 2025</p>
