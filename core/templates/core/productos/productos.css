@@ -1,0 +1,14 @@
+.esp-section {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    padding: 0 15%;
+}
+.ul-section {
+    display: flex;
+}
+li, div {
+    color: #797980
+}

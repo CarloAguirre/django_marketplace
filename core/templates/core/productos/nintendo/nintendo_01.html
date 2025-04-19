@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../assets/css/normalize.css" />
+    <link rel="stylesheet" href="../../assets/css/style.css" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>RetroPlay</title>
+  </head>
+  <body>
+    <!-- menu principal -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container" style="margin-bottom: -2rem;">
+          <a class="navbar-brand" href="index.html">
+              <img src="../../assets/imgs/logo.png" alt="logo" height="40">
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav ms-auto">
+                  <li class="nav-item"><a class="nav-link" href="../../index.html">Inicio</a></li>
+                  <li class="nav-item"><a class="nav-link" href="../../categorias/todas.html">Categorías</a></li>
+                  <li class="nav-item"><a class="nav-link" href="../../productos/todos.html">Productos</a></li>
+                  <li class="nav-item"><a class="nav-link" href="../../registro.html">Registro</a></li>
+                  <li class="nav-item"><a class="nav-link" href="../../perfil/perfil.html">Perfil</a></li>
+                  <li class="nav-item"><a class="nav-link" href="../../login.html">Login</a></li>
+              </ul>
+              <div class="icon-cart ms-3">
+                  <i class="ri-shopping-cart-line"></i>
+                  <span class="cart-item-count"></span>
+              </div>
+          </div>
+      </div>
+  </nav>
+  
+      <div class="cart">
+        <h2 class="cart-title">Carrito</h2>
+        <div class="cart-content">
+          <!-- <div class="cart-box">
+            <img src="../assets/imgs/Adventure_Atari.png" class="cart-img">
+            <div class="cart-detail">
+              <h2 class="cart-product-title">Adventure</h2>
+              <span class="cart-price">$24.990</span>
+              <div class="cart-quantity">
+                <button id="decrement">-</button>
+                <span class="number">1</span>
+                <button id="increment">+</button>
+              </div>
+            </div>
+            <i class="ri-delete-bin-6-fill cart-remove"></i>
+          </div> -->
+        </div>
+        <div class="total">
+          <div class="total-title">Total</div>
+          <div class="total-price">$0</div>
+        </div>
+        <button class="btn-buy">Comprar</button>
+        <i class="ri-close-circle-fill" id="cart-close"></i>
+      </div>
+
+    <div class="category-router">
+      <a href="../../categorias/nintendo.html">Nintendo</a> / Mario Party 2
+     </div>
+    <main>
+      <div class="container-2">
+        <div class="cont-img">
+          <img src="../../assets/imgs/Mario_Party2.png" class="cont-img">
+        </div>
+      </div>
+      <div class="container-3">
+        <div class="box">
+          <img src="../../assets/imgs/nintendo.svg.png" class="cont-img">
+        </div>
+        <div class="box-2">
+          <h1 class="title-text">Mario Party 2</h1>
+          <p class="text-box-2">En Mario Party 2, los jugadores se sumergen en una fiesta llena de diversión y competencia con los personajes más icónicos del Reino Champiñón. Con seis tableros temáticos y más de 60 minijuegos, este título expande la fórmula original con nuevos disfraces, mecánicas estratégicas y eventos aleatorios que pueden cambiar el rumbo de la partida. Ya sea compitiendo en carreras, duelos o desafíos de habilidad, la emoción y la rivalidad están aseguradas en cada turno. Con su multijugador caótico y su factor sorpresa, Mario Party 2 es un clásico atemporal para disfrutar con amigos y familiares.</p>
+          <div class="ul-container">
+            <div class="column">
+            <ul class="list">
+            <li>Mini (Minijuegos variados y frenéticos)</li>
+            <li>Turn (Juego basado en turnos)</li>
+            <li>Dice (Uso de dados para moverse)</li>
+          </ul>
+          </div>
+          <div class="column">
+          <ul class="list">
+              <li>Star (Recolecta estrellas para ganar)</li>
+              <li>Duel (Modo de enfrentamientos uno a uno)</li>
+              <li>Luck (Eventos aleatorios que cambian la partida)</li>
+            </ul>
+          </div> 
+          <div style="text-align: end; color: aliceblue; min-width: 14rem;">
+            <h2>Precio: $30.990</h2>
+          </div>  
+          </div>
+        </div>
+    </div>
+    <div class="container-4">
+      <div class="text-buy__wrapper">
+        <p class="text-buy">Comprar</p>
+      </div>
+    </div>   
+    </main>
+    <!-- inicio footer -->
+    <footer>
+      <p>RetroPlay 2025</p>
+    </footer>
+    <!-- fin footer -->
+    <script src="../../assets/js/cart.js"></script>
+    <script src="../../assets/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../assets/css/normalize.css" />
+    <link rel="stylesheet" href="../../assets/css/style.css" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>RetroPlay</title>
+  </head>
+  <body>
+    <!-- menu principal -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container" style="margin-bottom: -2rem;">
+          <a class="navbar-brand" href="index.html">
+              <img src="../../assets/imgs/logo.png" alt="logo" height="40">
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav ms-auto">
+                  <li class="nav-item"><a class="nav-link" href="../../index.html">Inicio</a></li>
+                  <li class="nav-item"><a class="nav-link" href="../../categorias/todas.html">Categorías</a></li>
+                  <li class="nav-item"><a class="nav-link" href="../../productos/todos.html">Productos</a></li>
+                  <li class="nav-item"><a class="nav-link" href="../../registro.html">Registro</a></li>
+                  <li class="nav-item"><a class="nav-link" href="../../perfil/perfil.html">Perfil</a></li>
+                  <li class="nav-item"><a class="nav-link" href="../../login.html">Login</a></li>
+              </ul>
+              <div class="icon-cart ms-3">
+                  <i class="ri-shopping-cart-line"></i>
+                  <span class="cart-item-count"></span>
+              </div>
+          </div>
+      </div>
+  </nav>
+  
+      <div class="cart">
+        <h2 class="cart-title">Carrito</h2>
+        <div class="cart-content">
+          <!-- <div class="cart-box">
+            <img src="../assets/imgs/Adventure_Atari.png" class="cart-img">
+            <div class="cart-detail">
+              <h2 class="cart-product-title">Adventure</h2>
+              <span class="cart-price">$24.990</span>
+              <div class="cart-quantity">
+                <button id="decrement">-</button>
+                <span class="number">1</span>
+                <button id="increment">+</button>
+              </div>
+            </div>
+            <i class="ri-delete-bin-6-fill cart-remove"></i>
+          </div> -->
+        </div>
+        <div class="total">
+          <div class="total-title">Total</div>
+          <div class="total-price">$0</div>
+        </div>
+        <button class="btn-buy">Comprar</button>
+        <i class="ri-close-circle-fill" id="cart-close"></i>
+      </div>
+
+    <div class="category-router">
+      <a href="../../categorias/playstation.html">Plastation</a> / Golden Eye
+     </div>
+    <main>
+      <div class="container-2">
+        <div class="cont-img">
+          <img src="../../assets/imgs/ps2-ff8.png" class="cont-img">
+        </div>
+      </div>
+      <div class="container-3">
+        <div class="box">
+          <img src="../../assets/imgs/playstation.svg.png" class="cont-img">
+        </div>
+        <div class="box-2">
+          <h1 class="title-text">Final Fantasy VIII</h1>
+          <p class="text-box-2">En Final Fantasy VIII, los jugadores siguen la historia de Squall Leonhart, un joven y talentoso cadete de SeeD que se ve envuelto en una guerra mundial y en el destino de una poderosa hechicera. A través de un mundo detallado, con batallas estratégicas y una historia cargada de emociones, el juego introduce el innovador sistema de Junction, permitiendo a los jugadores vincular magia a sus atributos para personalizar sus habilidades. Con cinemáticas impresionantes para su época y una banda sonora inolvidable, Final Fantasy VIII es una obra maestra del JRPG que dejó huella en la historia de los videojuegos.</p>
+          <div class="ul-container">
+            <div class="column">
+            <ul class="list">
+            <li>RPG (Juego de rol por turnos)</li>
+            <li>GF (Guardian Forces, invocaciones del juego)</li>
+            <li>Love (Historia centrada en romance y destino)</li>
+          </ul>
+          </div>
+          <div class="column">
+          <ul class="list">
+              <li>Junc (Sistema de Junction para habilidades)</li>
+              <li>Seed (Escuadrón de élite al que pertenece Squall)</li>
+              <li>Card (Minijuego de Triple Triad)</li>
+            </ul>
+          </div> 
+          <div style="text-align: end; color: aliceblue;min-width: 14rem;">
+            <h2>Precio: $19.990</h2>
+          </div>  
+          </div>
+        </div>
+    </div>
+    <div class="container-4">
+      <div class="text-buy__wrapper">
+        <p class="text-buy">Comprar</p>
+      </div>
+    </div>  
+    </main>
+    <!-- Fin contenedor de las categorias -->
+    <!-- inicio footer -->
+    <footer>
+      <p>RetroPlay 2025</p>
+    </footer>
+    <!-- fin footer -->
+    <script src="../../assets/js/cart.js"></script>
+    <script src="../../assets/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

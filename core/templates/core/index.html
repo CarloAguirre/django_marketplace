@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet"/>
+    <title>RetroPlay</title>
+  </head>
+  <body>
+    <div class="containerPpal">
+    <!-- menu principal -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container" style="margin-bottom: -2rem;">
+          <a class="navbar-brand" href="index.html">
+              <img src="{% static 'imgs/logo.png' %}" alt="logo" height="40">
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav ms-auto">
+                  <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                  <li class="nav-item"><a class="nav-link" href="categorias">Categorías</a></li>
+                  <li class="nav-item"><a class="nav-link" href="productos">Productos</a></li>
+                  <li class="nav-item"><a class="nav-link" href="registro">Registro</a></li>
+                  <li class="nav-item"><a class="nav-link" href="perfil">Perfil</a></li>
+                  <li class="nav-item"><a class="nav-link" href="login">Login</a></li>
+              </ul>
+              <div class="icon-cart ms-3">
+                  <i class="ri-shopping-cart-line"></i>
+                  <span class="cart-item-count"></span>
+              </div>
+          </div>
+      </div>
+  </nav>
+  
+
+    <div class="cart">
+      <h2 class="cart-title">Carrito</h2>
+      <div class="cart-content">
+      </div>
+      <div class="total">
+        <div class="total-title">Total</div>
+        <div class="total-price">$0</div>
+      </div>
+      <button class="btn-buy">Comprar</button>
+      <i class="ri-close-circle-fill" id="cart-close"></i>
+    </div>
+
+    <!-- carusel de imagenes -->
+    <header>
+      <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true"></button>
+              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></button>
+          </div>
+          <div class="carousel-inner">
+              <div class="carousel-item active">
+                  <img src="{% static 'imgs/xbox.jpg' %}" class="d-block w-100" alt="Slide 1">
+                  <div class="carousel-caption d-none d-md-block">
+                    <a href=""><h2>Nueva XBox serie X</h2></a>
+                      <h4>Descubre los....</h4>
+                  </div>
+              </div>
+              <div class="carousel-item">
+                  <img src="{% static 'imgs/switch.jpg' %}" class="d-block w-100" alt="Slide 2">
+                  <div class="carousel-caption d-none d-md-block">
+                    <a href=""><h2>Pack Promo Nintendo</h2></a>
+                      <h4>Obten un pack de...</h4>
+                  </div>
+              </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          </button>
+      </div>
+  </header>
+  
+
+    <h1 class="mt-3">Categorías</h1>
+    <!-- contenedor de las categorias -->
+    <main>
+      <!-- categoria 01 -->
+      <div class="card-wrapper">
+        <div class="img-container">
+          <img
+          src="{% static 'imgs/atari.png' %}"
+          class="card-img"
+          />
+        <div class="img-overlay">
+          <div class="img-title">
+            <a href="./categorias/atari.html">Atari</a>
+          </div>
+          <p class="img-description">Atari, pionero en la industria de los videojuegos, revolucionó el entretenimiento con clásicos como Pong y Asteroids. 🎮</p>
+          </div>
+        </div>
+        </p>
+      </div>
+      <!-- fin categoria 01 -->
+      <!--  categoria 02 -->
+      <div class="card-wrapper">
+        <div class="img-container">
+          <img
+          src="{% static 'imgs/nintendo.svg.png' %} "
+          class="card-img"
+          />
+        <div class="img-overlay">
+          <div class="img-title">
+            <a href="./categorias/nintendo.html">Nintendo</a>
+          </div>
+          <p class="img-description">Nintendo, icono de la industria, creó franquicias legendarias como Mario, Zelda y Pokémon, definiendo generaciones de jugadores. 🎮</p>
+          </div>
+        </div>
+        </p>
+      </div>
+      <!-- fin categoria 02 -->
+      <!--  categoria 03 -->
+      <div class="card-wrapper">
+        <div class="img-container">
+          <img
+          src="{% static 'imgs/sega.png' %}"
+          class="card-img"
+          />
+        <div class="img-overlay">
+          <div class="img-title">
+            <a href="./categorias/sega.html">Sega</a>
+          </div>
+          <p class="img-description">Sega, creadora de Sonic the Hedgehog, marcó la historia de los videojuegos con innovaciones y títulos icónicos en consolas legendarias. 🎮</p>
+          </div>
+        </div>
+        </p>
+      </div>
+      <!--  fin categoria 03 -->
+      <!-- categoria 04 -->
+      <div class="card-wrapper">
+        <div class="img-container">
+          <img
+          src="{% static 'imgs/playstation.svg.png' %}"
+          class="card-img"
+          />
+        <div class="img-overlay">
+          <div class="img-title">
+            <a href="./categorias/playstation.html">PlayStation</a>
+          </div>
+          <p class="img-description">PlayStation, la consola de Sony, revolucionó los videojuegos con gráficos avanzados y sagas icónicas como Final Fantasy y God of War. 🎮</p>
+          </div>
+        </div>
+        </p>
+      </div>
+      <!-- fin categoria 04 -->
+      <!-- categoria 05 -->
+      <div class="card-wrapper">
+        <div class="img-container">
+          <img
+          src="{% static 'imgs/dreamcast.svg.png' %}"
+          class="card-img"
+          />
+        <div class="img-overlay">
+          <div class="img-title">
+            <a href="./categorias/dreamcast.html">DreamCast</a>
+          </div>
+          <p class="img-description">Dreamcast, la última consola de Sega, innovó con juegos icónicos como Shenmue y Sonic Adventure, marcando una era en el gaming. 🎮</p>
+          </div>
+        </div>
+        </p>
+      </div>     
+      <!-- fin categoria 05 -->
+    </main>
+
+  </div>
+    <!-- Fin contenedor de las categorias -->
+    <!-- inicio footer -->
+    <footer >
+      <p>RetroPlay 2025</p>
+    </footer>
+    <!-- fin footer -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+     <script src="{% static 'js/cart.js' %}"></script>
+     <script src="{% static 'js/script.js' %}"></script>
+  </body>
+</html>

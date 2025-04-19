@@ -1,0 +1,226 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet"/>
+    <title>Retroplay - Registro</title>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container" style="margin-bottom: -2rem;">
+            <a class="navbar-brand" href="index.html">
+                <img src="{% static 'imgs/logo.png' %}" alt="logo" height="40">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="categorias">Categorías</a></li>
+                    <li class="nav-item"><a class="nav-link" href="productos">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="registro">Registro</a></li>
+                    <li class="nav-item"><a class="nav-link" href="perfil">Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="login">Login</a></li>
+                </ul>
+                <div class="icon-cart ms-3">
+                    <i class="ri-shopping-cart-line"></i>
+                    <span class="cart-item-count"></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="cart">
+        <h2 class="cart-title">Carrito</h2>
+        <div class="cart-content">
+        </div>
+        <div class="total">
+          <div class="total-title">Total</div>
+          <div class="total-price">$0</div>
+        </div>
+        <button class="btn-buy">Comprar</button>
+        <i class="ri-close-circle-fill" id="cart-close"></i>
+      </div>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card p-4 rounded-5">
+                <h2 class="text-center mb-4"><i class="ri-user-add-line"></i> Crear Cuenta</h2>
+                <form id="form-user" method="post" action="{% url 'registro' %}">
+                    {% csrf_token %}
+                  
+                    <div class="row">
+                      <div class="col-md-6 col-lg-4 mb-3">
+                        <label for="input-nombres" class="form-label">Nombres</label>
+                        <input
+                          type="text"
+                          name="nombres"
+                          id="input-nombres"
+                          class="form-control"
+                          value="{{ request.POST.nombres|default:'' }}"
+                          placeholder="Nombres"
+                          required
+                        >
+                      </div>
+                      <div class="col-md-6 col-lg-4 mb-3">
+                        <label for="input-apellidos" class="form-label">Apellidos</label>
+                        <input
+                          type="text"
+                          name="apellidos"
+                          id="input-apellidos"
+                          class="form-control"
+                          value="{{ request.POST.apellidos|default:'' }}"
+                          placeholder="Apellidos"
+                          required
+                        >
+                      </div>
+                      <div class="col-md-6 col-lg-4 mb-3">
+                        <label for="input-usuario" class="form-label">Usuario</label>
+                        <input
+                          type="text"
+                          name="username"
+                          id="input-usuario"
+                          class="form-control"
+                          value="{{ request.POST.username|default:'' }}"
+                          placeholder="Usuario"
+                          required
+                        >
+                      </div>
+                    </div>
+                  
+                    <div class="row">
+                      <div class="col-md-6 col-lg-4 mb-3">
+                        <label for="input-email" class="form-label">Correo electrónico</label>
+                        <input
+                          type="email"
+                          name="email"
+                          id="input-email"
+                          class="form-control"
+                          value="{{ request.POST.email|default:'' }}"
+                          placeholder="Correo electrónico"
+                          required
+                        >
+                      </div>
+                      <div class="col-md-6 col-lg-4 mb-3">
+                        <label for="input-pass" class="form-label">Contraseña</label>
+                        <input
+                          type="password"
+                          name="password"
+                          id="input-pass"
+                          class="form-control"
+                          placeholder="Contraseña"
+                          required
+                        >
+                      </div>
+                      <div class="col-md-6 col-lg-4 mb-3">
+                        <label for="input-repass" class="form-label">Confirmar contraseña</label>
+                        <input
+                          type="password"
+                          name="repassword"
+                          id="input-repass"
+                          class="form-control"
+                          placeholder="Confirmar contraseña"
+                          required
+                        >
+                      </div>
+                    </div>
+                  
+                    <div class="row">
+                      <div class="col-md-6 col-lg-4 mb-3">
+                        <label for="input-birthday" class="form-label">Fecha de nacimiento</label>
+                        <input
+                          type="date"
+                          name="fecha_nacimiento"
+                          id="input-birthday"
+                          class="form-control"
+                          value="{{ request.POST.fecha_nacimiento|default:'' }}"
+                          required
+                        >
+                      </div>
+                    </div>
+                  
+                    <hr>
+                    <h5 class="mb-3">Dirección de despacho</h5>
+                    <div class="row">
+                      <div class="col-md-6 col-lg-4 mb-3">
+                        <label for="input-calle" class="form-label">Calle</label>
+                        <input
+                          type="text"
+                          name="calle"
+                          id="input-calle"
+                          class="form-control"
+                          value="{{ request.POST.calle|default:'' }}"
+                          placeholder="Calle"
+                        >
+                      </div>
+                      <div class="col-md-6 col-lg-4 mb-3">
+                        <label for="input-numero" class="form-label">Número</label>
+                        <input
+                          type="text"
+                          name="numero"
+                          id="input-numero"
+                          class="form-control"
+                          value="{{ request.POST.numero|default:'' }}"
+                          placeholder="Número"
+                        >
+                      </div>
+                      <div class="col-md-6 col-lg-4 mb-3">
+                        <label for="input-tipo_direccion" class="form-label">Casa/Depto/Block</label>
+                        <input
+                          type="text"
+                          name="tipo_direccion"
+                          id="input-tipo_direccion"
+                          class="form-control"
+                          value="{{ request.POST.tipo_direccion|default:'' }}"
+                          placeholder="Casa/Depto/Block"
+                        >
+                      </div>
+                    </div>
+                  
+                    <div class="form-check mb-3">
+                      <input
+                        type="checkbox"
+                        name="check_terminos"
+                        class="form-check-input"
+                        id="check-terminos"
+                        required
+                      >
+                      <label class="form-check-label" for="check-terminos">
+                        Acepto los términos y condiciones
+                      </label>
+                    </div>
+                  
+                    <button type="submit" class="btn w-100" style="background-color: #0dcaf0; color: white;">
+                      Registrarse
+                    </button>
+                  </form>
+                  
+
+                <p class="text-center mt-3">¿Ya tienes una cuenta? <a href="login.html" style="color: rgb(50, 120, 182);">Inicia sesión</a></p>
+
+                <div class="text-center mt-3">
+                    <hr>
+                    <button class="btn btn-light w-100">
+                        <img src="{% static 'imgs/google-icon.png' %}" alt="google-icon" style="height: 1.6rem">Registrarse con Google
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="mt-4 text-center">
+    <p>RetroPlay 2025</p>
+</footer>
+{% comment %} <script src="{% static 'js/cart.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script> {% endcomment %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
