@@ -102,91 +102,30 @@
     <h1 class="mt-3">Categorías</h1>
     <!-- contenedor de las categorias -->
     <main>
-      <!-- categoria 01 -->
+      {% for cat in categorias %}
       <div class="card-wrapper">
         <div class="img-container">
+          <!-- Ajusta la ruta de la imagen según el nombre de tu categoría -->
           <img
-          src="{% static 'imgs/atari.png' %}"
-          class="card-img"
+            src="{% static 'imgs/'|add:cat.nombre_categoria|add:'.png' %}"
+            class="card-img"
+            alt="{{ cat.nombre }}"
           />
-        <div class="img-overlay">
-          <div class="img-title">
-            <a href="./categorias/atari.html">Atari</a>
-          </div>
-          <p class="img-description">Atari, pionero en la industria de los videojuegos, revolucionó el entretenimiento con clásicos como Pong y Asteroids. 🎮</p>
+          <div class="img-overlay">
+            <div class="img-title">
+              <a href="{% url 'categoria' cat.id cat.nombre_categoria|slugify %}" class="nav-link">
+                {{ cat.nombre_categoria }}
+              </a>
+            </div>
+            {% comment %} <p class="img-description">
+              {{ cat.categoria|default:"Sin descripción disponible" }}
+            </p> {% endcomment %}
           </div>
         </div>
-        </p>
       </div>
-      <!-- fin categoria 01 -->
-      <!--  categoria 02 -->
-      <div class="card-wrapper">
-        <div class="img-container">
-          <img
-          src="{% static 'imgs/nintendo.svg.png' %} "
-          class="card-img"
-          />
-        <div class="img-overlay">
-          <div class="img-title">
-            <a href="./categorias/nintendo.html">Nintendo</a>
-          </div>
-          <p class="img-description">Nintendo, icono de la industria, creó franquicias legendarias como Mario, Zelda y Pokémon, definiendo generaciones de jugadores. 🎮</p>
-          </div>
-        </div>
-        </p>
-      </div>
-      <!-- fin categoria 02 -->
-      <!--  categoria 03 -->
-      <div class="card-wrapper">
-        <div class="img-container">
-          <img
-          src="{% static 'imgs/sega.png' %}"
-          class="card-img"
-          />
-        <div class="img-overlay">
-          <div class="img-title">
-            <a href="./categorias/sega.html">Sega</a>
-          </div>
-          <p class="img-description">Sega, creadora de Sonic the Hedgehog, marcó la historia de los videojuegos con innovaciones y títulos icónicos en consolas legendarias. 🎮</p>
-          </div>
-        </div>
-        </p>
-      </div>
-      <!--  fin categoria 03 -->
-      <!-- categoria 04 -->
-      <div class="card-wrapper">
-        <div class="img-container">
-          <img
-          src="{% static 'imgs/playstation.svg.png' %}"
-          class="card-img"
-          />
-        <div class="img-overlay">
-          <div class="img-title">
-            <a href="./categorias/playstation.html">PlayStation</a>
-          </div>
-          <p class="img-description">PlayStation, la consola de Sony, revolucionó los videojuegos con gráficos avanzados y sagas icónicas como Final Fantasy y God of War. 🎮</p>
-          </div>
-        </div>
-        </p>
-      </div>
-      <!-- fin categoria 04 -->
-      <!-- categoria 05 -->
-      <div class="card-wrapper">
-        <div class="img-container">
-          <img
-          src="{% static 'imgs/dreamcast.svg.png' %}"
-          class="card-img"
-          />
-        <div class="img-overlay">
-          <div class="img-title">
-            <a href="./categorias/dreamcast.html">DreamCast</a>
-          </div>
-          <p class="img-description">Dreamcast, la última consola de Sega, innovó con juegos icónicos como Shenmue y Sonic Adventure, marcando una era en el gaming. 🎮</p>
-          </div>
-        </div>
-        </p>
-      </div>     
-      <!-- fin categoria 05 -->
+    {% empty %}
+      <p class="text-white">No hay categorías definidas.</p>
+    {% endfor %}
     </main>
 
   </div>

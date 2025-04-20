@@ -21,7 +21,8 @@ User = get_user_model()
 # Create your views here.
 
 def index(request):
-	return render(request, 'core/index.html')
+    todas = Categoria.objects.all()
+    return render(request, 'core/index.html', {'categorias': todas})
 
 def login_view(request):
     if request.user.is_authenticated:
