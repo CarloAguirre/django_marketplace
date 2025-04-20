@@ -2,7 +2,7 @@ from django.urls import path
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
-from .views import index, login_view, registro, productos, categorias, perfil, nuevo_producto, categoria, producto, actualizar_producto, eliminar_producto, agregar_al_carrito, listar_carrito, modificar_cantidad_carrito, eliminar_producto_carrito
+from .views import index, login_view, registro, productos, categorias, perfil, nuevo_producto, categoria, producto, actualizar_producto, eliminar_producto, agregar_al_carrito, listar_carrito, modificar_cantidad_carrito, eliminar_producto_carrito, procesar_compra, editar_perfil, reset_password_request, reset_password_confirm
 
 urlpatterns = [
     path('', index, name='home'),
@@ -22,7 +22,10 @@ urlpatterns = [
 	path('carrito/eliminar/', eliminar_producto_carrito, name='eliminar_producto_carrito'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
 	path('categoria/<int:id>/<slug:slug>/', categoria, name='categoria'),
-
+	path('carrito/comprar/', procesar_compra, name='procesar_compra'),
+    path('perfil/editar/', editar_perfil, name='editar_perfil'),
+    path('password/reset/', reset_password_request, name='reset_password_request'),
+    path('password/reset/confirm/', reset_password_confirm, name='reset_password_confirm'),
 ]
 
 if settings.DEBUG:

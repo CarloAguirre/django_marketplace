@@ -68,6 +68,15 @@
         <div class="col-lg-8 col-md-10">
             <div class="card p-4 rounded-5">
                 <h2 class="text-center mb-4"><i class="ri-user-add-line"></i> Crear Cuenta</h2>
+                {% if messages %}
+                <div class="mb-3">
+                  {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                      {{ message }}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
                 <form id="form-user" method="post" action="{% url 'registro' %}">
                     {% csrf_token %}
                   
@@ -97,7 +106,7 @@
                         >
                       </div>
                       <div class="col-md-6 col-lg-4 mb-3">
-                        <label for="input-usuario" class="form-label">Usuario</label>
+                        <label for="input-usuario" class="form-label">Nombre de Usuario</label>
                         <input
                           type="text"
                           name="username"
@@ -197,6 +206,18 @@
                           placeholder="Casa/Depto/Block"
                         >
                       </div>
+                      <div class="col-md-6 col-lg-4">
+                      <label for="input-rol" class="form-label">Tipo de usuario</label>
+                      <select name="rol" id="input-rol" class="form-select" required>
+                        <option value="" disabled selected>-- Selecciona un rol --</option>
+                        {% for r in roles %}
+                          <option value="{{ r.id }}"
+                            {% if request.POST.rol|stringformat:"s" == r.id|stringformat:"s" %}selected{% endif %}>
+                            {{ r.nombre_rol|capfirst }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
                     </div>
                   
                     <div class="form-check mb-3">

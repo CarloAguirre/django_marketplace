@@ -37,6 +37,28 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       })
     }
+
+    document.querySelector(".btn-buy").addEventListener("click", () => {
+      fetch("/carrito/comprar/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": getCSRFToken(),
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.ok) {
+            alert("✅ Producto comprado. Te mantendremos informado!")
+            document.querySelector(".cart-content").innerHTML = ""
+            document.querySelector(".total-price").textContent = "$0"
+            updateCartCount(0)
+          } else {
+            alert("❌ Ocurrió un error al procesar tu compra")
+          }
+        })
+    })
+    
     document.addEventListener("click", (event) => {
         const cartBox = event.target.closest(".cart-box")
         if (!cartBox) return

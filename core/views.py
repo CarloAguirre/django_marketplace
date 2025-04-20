@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login
-from .models import Direccion, Rol, Carrito, CarritoProducto, Producto
+from .models import Direccion, Rol, Carrito, CarritoProducto, Producto, Compra
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 from .models import Producto, Categoria
@@ -9,7 +9,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponseServerError
 from django.views.decorators.http import require_POST
+from django.db.models import F
+import re
 import json
+
 
 
 User = get_user_model()
@@ -40,7 +43,17 @@ def login_view(request):
 
 User = get_user_model()
 
+# core/views.py
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth import get_user_model, login
+from .models import Direccion, Rol
+
+User = get_user_model()
+
 def registro(request):
+    roles = Rol.objects.all()
     if request.method == 'POST':
         nombres       = request.POST.get('nombres', '').strip()
         apellidos     = request.POST.get('apellidos', '').strip()
@@ -48,35 +61,56 @@ def registro(request):
         email         = request.POST.get('email', '').strip()
         password      = request.POST.get('password', '')
         repassword    = request.POST.get('repassword', '')
-        fecha_nac     = request.POST.get('fecha_nacimiento') 
+        fecha_nac     = request.POST.get('fecha_nacimiento')
         calle         = request.POST.get('calle', '').strip()
         numero_calle  = request.POST.get('numero', '').strip()
         tipo_dir      = request.POST.get('tipo_direccion', '').strip()
+        rol_id        = request.POST.get('rol')
+
         if password != repassword:
             messages.error(request, "Las contraseñas no coinciden.")
-            return render(request, 'core/registro.html')
+            return render(request, 'core/registro.html', {'roles': roles})
+
+        if len(password) < 8:
+            messages.error(request, "La contraseña debe tener al menos 8 caracteres.")
+            return render(request, 'core/registro.html', {'roles': roles})
+        if len(password) > 64:
+            messages.error(request, "La contraseña no puede exceder los 64 caracteres.")
+            return render(request, 'core/registro.html', {'roles': roles})
+
+        import re
+        if not re.search(r'[A-Za-z]', password) or not re.search(r'\d', password):
+            messages.error(request, "La contraseña debe contener al menos una letra y un número.")
+            return render(request, 'core/registro.html', {'roles': roles})
+        if not re.search(r'[!@#$%^&*()_+\-=\[\]{};\'\"\\|,.<>\/?]', password):
+            messages.error(request, "La contraseña debe contener al menos un carácter especial.")
+            return render(request, 'core/registro.html', {'roles': roles})
 
         if User.objects.filter(username=username).exists():
             messages.error(request, "El nombre de usuario ya existe.")
-            return render(request, 'core/registro.html')
-
+            return render(request, 'core/registro.html', {'roles': roles})
         if User.objects.filter(email=email).exists():
             messages.error(request, "El correo ya está registrado.")
-            return render(request, 'core/registro.html')
+            return render(request, 'core/registro.html', {'roles': roles})
+
         direccion = None
         if calle or numero_calle or tipo_dir:
             try:
                 num = int(numero_calle) if numero_calle else 0
             except ValueError:
                 messages.error(request, "Ingrese un número de calle válido.")
-                return render(request, 'core/registro.html')
-
+                return render(request, 'core/registro.html', {'roles': roles})
             direccion = Direccion.objects.create(
                 calle=calle or "-",
                 numero=num,
                 depto=tipo_dir or None
             )
-        rol_usuario, _ = Rol.objects.get_or_create(nombre_rol='usuario')
+
+        try:
+            rol_usuario = Rol.objects.get(pk=rol_id)
+        except (Rol.DoesNotExist, ValueError, TypeError):
+            rol_usuario, _ = Rol.objects.get_or_create(nombre_rol='usuario')
+
         usuario = User.objects.create_user(
             username=username,
             email=email,
@@ -90,7 +124,9 @@ def registro(request):
         login(request, usuario)
         messages.success(request, f"Bienvenido, {usuario.nombre}! Tu cuenta ha sido creada.")
         return redirect('perfil')
-    return render(request, 'core/registro.html')
+
+    return render(request, 'core/registro.html', {'roles': roles})
+
 
 
 def productos(request):
@@ -116,9 +152,13 @@ def categoria(request, id, slug):
 @login_required
 def perfil(request):
     productos = Producto.objects.all()
+    compras = Compra.objects.filter(usuario=request.user).select_related('carrito').order_by('-fecha_compra')
+    
     return render(request, 'core/perfil.html', {
-        'productos': productos
+        'productos': productos,
+        'compras': compras
     })
+
 
 @login_required
 def nuevo_producto(request):
@@ -279,3 +319,111 @@ def eliminar_producto_carrito(request):
     CarritoProducto.objects.filter(carrito=carrito, producto_id=producto_id).delete()
     total_items = CarritoProducto.objects.filter(carrito=carrito).count()
     return JsonResponse({"ok": True, "total_items": total_items})
+
+@require_POST
+@login_required
+def procesar_compra(request):
+    carrito = get_object_or_404(Carrito, usuario=request.user, estado='A')
+    items = CarritoProducto.objects.filter(carrito=carrito)
+    if not items.exists():
+        return JsonResponse({'ok': False, 'error': 'Carrito vacío'}, status=400)
+
+    total = 0
+    for item in items:
+        total += item.producto.precio * item.cantidad
+
+    compra = Compra.objects.create(
+        usuario=request.user,
+        carrito=carrito,
+        total=total,
+        metodo_pago='Transferencia'
+    )
+    for item in items:
+        producto = item.producto
+        producto.stock = F('stock') - item.cantidad
+        producto.save(update_fields=['stock'])
+
+    carrito.estado = 'C'
+    carrito.save()
+
+    return JsonResponse({'ok': True})
+
+@login_required
+def editar_perfil(request):
+    user = request.user
+    # Asumimos que la relación dirección ya existe o es opcional
+    direccion = getattr(user, 'direccion', None)
+
+    if request.method == 'POST':
+        # Campos enviados desde el formulario
+        nombre = request.POST.get('nombre', '').strip()
+        apellido = request.POST.get('apellido', '').strip()
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '').strip()
+        calle = request.POST.get('calle', '').strip()
+        numero = request.POST.get('numero', '').strip()
+        depto = request.POST.get('depto', '').strip() or None
+
+        # Validaciones básicas (puedes ampliarlas)
+        if not nombre or not apellido or not email:
+            messages.error(request, "Nombre, apellido y email son obligatorios.")
+            return redirect('perfil')
+
+        # Actualizar usuario
+        user.nombre = nombre
+        user.apellido = apellido
+        user.email = email
+        if password:
+            user.set_password(password)
+        user.save()
+
+        # Actualizar o crear dirección
+        if direccion:
+            direccion.calle = calle or direccion.calle
+            try:
+                direccion.numero = int(numero)
+            except ValueError:
+                direccion.numero = direccion.numero
+            direccion.depto = depto
+            direccion.save()
+        else:
+            from .models import Direccion
+            try:
+                num = int(numero) if numero else 0
+            except ValueError:
+                num = 0
+            direccion = Direccion.objects.create(
+                calle=calle or "-",
+                numero=num,
+                depto=depto
+            )
+            user.direccion = direccion
+            user.save()
+
+        messages.success(request, "Tus datos han sido actualizados correctamente.")
+        return redirect('perfil')
+    
+    return redirect('perfil')
+
+@require_POST
+def reset_password_request(request):
+    data = json.loads(request.body)
+    email = data.get('email', '').strip()
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return JsonResponse({'ok': False, 'error': 'El correo no existe.'}, status=400)
+    return JsonResponse({'ok': True})
+
+@require_POST
+def reset_password_confirm(request):
+    data = json.loads(request.body)
+    email = data.get('email', '').strip()
+    new_password = data.get('new_password', '').strip()
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return JsonResponse({'ok': False, 'error': 'El correo no existe.'}, status=400)
+    user.set_password(new_password)
+    user.save()
+    return JsonResponse({'ok': True})

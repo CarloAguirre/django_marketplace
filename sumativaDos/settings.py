@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
+from django.contrib.messages import constants as message_constants
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 os.environ["TNS_ADMIN"] = str(BASE_DIR / "core" / "db" / "wallet")
@@ -93,6 +94,14 @@ DATABASES = {
         'USER': 'ADMIN',
         'PASSWORD': 'OracleCloud123',
     }
+}
+
+MESSAGE_TAGS = {
+    message_constants.DEBUG: 'secondary',
+    message_constants.INFO: 'info',
+    message_constants.SUCCESS: 'success',
+    message_constants.WARNING: 'warning',
+    message_constants.ERROR: 'danger',
 }
 
 AUTH_USER_MODEL = 'core.Usuario' 
