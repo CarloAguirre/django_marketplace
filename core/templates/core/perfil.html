@@ -111,15 +111,11 @@
           <button type="button" class="btn btn-warning mb-5" id="btn-editar">Modificar</button>
           <button type="submit" class="btn btn-success d-none" id="btn-guardar">Guardar cambios</button>
         </form>
-        {% if request.user.rol.nombre_rol == 'admin' %}
         <div class="btn-wrapper">
           <a href="/productos/nuevo/" class="btn btn-info add-product__btn">Agregar Producto</a>
         </div>
-      {% endif %}
       </div>
 
-
-    {% if request.user.rol.nombre_rol == 'admin' %}
       <div>
         <h2 class="text-center text-white">Mis Productos en Venta</h2>
         <div class="container user-products-container">
@@ -152,9 +148,6 @@
           {% endfor %}
         </div>
       </div>
-    {% endif %}
-
-    {% if request.user.rol.nombre_rol != 'admin' %}
       <div class="mt-5">
         <h2 class="text-white text-center mb-4">Tus Compras</h2>
         {% if compras %}
@@ -188,7 +181,6 @@
           <p class="text-white text-center">Aún no has realizado compras.</p>
         {% endif %}
       </div>
-    {% endif %}
     </div>
     <footer>
       <p>RetroPlay 2025</p>

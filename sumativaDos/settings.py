@@ -9,16 +9,12 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
 import os
 from pathlib import Path
-from django.contrib.messages import constants as message_constants
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-os.environ["TNS_ADMIN"] = str(BASE_DIR / "core" / "db" / "wallet")
 
-import cx_Oracle
-cx_Oracle.init_oracle_client(lib_dir="C:/oracle/instantclient_23_7")
+from django.contrib.messages import constants as message_constants
 
 
 # Quick-start development settings - unsuitable for production
@@ -45,7 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	'core'
+	'core',
+	'rest_framework',
+	'rest_api',
+	'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -84,17 +83,13 @@ WSGI_APPLICATION = 'sumativaDos.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.oracle',
-        'NAME': '''(description=
-            (retry_count=20)
-            (retry_delay=3)
-            (address=(protocol=tcps)(port=1522)(host=adb.sa-santiago-1.oraclecloud.com))
-            (connect_data=(service_name=g692d6a5b99b611_lsy6fmm4lrc8s0kh_high.adb.oraclecloud.com))
-            (security=(ssl_server_dn_match=yes))
-        )''',
-        'USER': 'ADMIN',
-        'PASSWORD': 'OracleCloud123',
+        'NAME': 'localhost/XEPDB1',  
+        'USER': 'django_user', 
+        'PASSWORD': 'OracleLocal123', 
     }
 }
+
+
 
 MESSAGE_TAGS = {
     message_constants.DEBUG: 'secondary',
@@ -149,3 +144,13 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+

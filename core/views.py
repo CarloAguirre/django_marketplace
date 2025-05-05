@@ -12,17 +12,50 @@ from django.views.decorators.http import require_POST
 from django.db.models import F
 import re
 import json
+import requests, random
+
 
 
 
 User = get_user_model()
 
 
-# Create your views here.
-
 def index(request):
-    todas = Categoria.objects.all()
-    return render(request, 'core/index.html', {'categorias': todas})
+    api_key = '7ce8a89a5d9431cdb3c95f91830c39b67d6170b8'
+    headers = {'User-Agent': 'TuApp/1.0'}
+
+    meta_resp = requests.get(
+        'https://www.giantbomb.com/api/games/',
+        params={'api_key': api_key, 'format': 'json', 'limit': 1},
+        headers=headers
+    )
+    meta = meta_resp.json()
+    total = meta.get('number_of_total_results', 0)
+    offset = random.randint(0, max(total - 4, 0))
+
+    response = requests.get(
+        'https://www.giantbomb.com/api/games/',
+        params={'api_key': api_key, 'format': 'json', 'limit': 3, 'offset': offset},
+        headers=headers
+    ).json()
+    juegos = response.get('results', [])
+
+    destacados = []
+    for juego in juegos:
+        if juego.get('image') and juego.get('deck') and juego.get('site_detail_url'):
+            destacados.append({
+                'name': juego['name'],
+                'deck': juego['deck'],
+                'image': juego['image']['original_url'],
+                'url': juego['site_detail_url']
+            })
+
+    return render(request, 'core/index.html', {
+        'categorias': Categoria.objects.all(),
+        'destacados': destacados
+    })
+
+
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -42,57 +75,41 @@ def login_view(request):
     return render(request, 'core/login.html')
 
 
-User = get_user_model()
-
-# core/views.py
-
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.contrib.auth import get_user_model, login
-from .models import Direccion, Rol
-
-User = get_user_model()
-
 def registro(request):
-    roles = Rol.objects.all()
     if request.method == 'POST':
-        nombres       = request.POST.get('nombres', '').strip()
-        apellidos     = request.POST.get('apellidos', '').strip()
-        username      = request.POST.get('username', '').strip()
-        email         = request.POST.get('email', '').strip()
-        password      = request.POST.get('password', '')
-        repassword    = request.POST.get('repassword', '')
-        fecha_nac     = request.POST.get('fecha_nacimiento')
-        calle         = request.POST.get('calle', '').strip()
-        numero_calle  = request.POST.get('numero', '').strip()
-        tipo_dir      = request.POST.get('tipo_direccion', '').strip()
-        rol_id        = request.POST.get('rol')
+        nombres = request.POST.get('nombres', '').strip()
+        apellidos = request.POST.get('apellidos', '').strip()
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '')
+        repassword = request.POST.get('repassword', '')
+        fecha_nac = request.POST.get('fecha_nacimiento')
+        calle = request.POST.get('calle', '').strip()
+        numero_calle = request.POST.get('numero', '').strip()
+        tipo_dir = request.POST.get('tipo_direccion', '').strip()
 
         if password != repassword:
             messages.error(request, "Las contraseñas no coinciden.")
-            return render(request, 'core/registro.html', {'roles': roles})
+            return render(request, 'core/registro.html')
 
-        if len(password) < 8:
-            messages.error(request, "La contraseña debe tener al menos 8 caracteres.")
-            return render(request, 'core/registro.html', {'roles': roles})
-        if len(password) > 64:
-            messages.error(request, "La contraseña no puede exceder los 64 caracteres.")
-            return render(request, 'core/registro.html', {'roles': roles})
+        if len(password) < 8 or len(password) > 64:
+            messages.error(request, "La contraseña debe tener entre 8 y 64 caracteres.")
+            return render(request, 'core/registro.html')
 
         import re
         if not re.search(r'[A-Za-z]', password) or not re.search(r'\d', password):
             messages.error(request, "La contraseña debe contener al menos una letra y un número.")
-            return render(request, 'core/registro.html', {'roles': roles})
+            return render(request, 'core/registro.html')
         if not re.search(r'[!@#$%^&*()_+\-=\[\]{};\'\"\\|,.<>\/?]', password):
             messages.error(request, "La contraseña debe contener al menos un carácter especial.")
-            return render(request, 'core/registro.html', {'roles': roles})
+            return render(request, 'core/registro.html')
 
         if User.objects.filter(username=username).exists():
             messages.error(request, "El nombre de usuario ya existe.")
-            return render(request, 'core/registro.html', {'roles': roles})
+            return render(request, 'core/registro.html')
         if User.objects.filter(email=email).exists():
             messages.error(request, "El correo ya está registrado.")
-            return render(request, 'core/registro.html', {'roles': roles})
+            return render(request, 'core/registro.html')
 
         direccion = None
         if calle or numero_calle or tipo_dir:
@@ -100,17 +117,15 @@ def registro(request):
                 num = int(numero_calle) if numero_calle else 0
             except ValueError:
                 messages.error(request, "Ingrese un número de calle válido.")
-                return render(request, 'core/registro.html', {'roles': roles})
+                return render(request, 'core/registro.html')
             direccion = Direccion.objects.create(
                 calle=calle or "-",
                 numero=num,
                 depto=tipo_dir or None
             )
 
-        try:
-            rol_usuario = Rol.objects.get(pk=rol_id)
-        except (Rol.DoesNotExist, ValueError, TypeError):
-            rol_usuario, _ = Rol.objects.get_or_create(nombre_rol='usuario')
+        # Asignar siempre el rol de "usuario"
+        rol_usuario, _ = Rol.objects.get_or_create(nombre_rol='usuario')
 
         usuario = User.objects.create_user(
             username=username,
@@ -126,7 +141,8 @@ def registro(request):
         messages.success(request, f"Bienvenido, {usuario.nombre}! Tu cuenta ha sido creada.")
         return redirect('perfil')
 
-    return render(request, 'core/registro.html', {'roles': roles})
+    return render(request, 'core/registro.html')
+
 
 
 
@@ -369,16 +385,12 @@ def editar_perfil(request):
         if not nombre or not apellido or not email:
             messages.error(request, "Nombre, apellido y email son obligatorios.")
             return redirect('perfil')
-
-        # Actualizar usuario
         user.nombre = nombre
         user.apellido = apellido
         user.email = email
         if password:
             user.set_password(password)
         user.save()
-
-        # Actualizar o crear dirección
         if direccion:
             direccion.calle = calle or direccion.calle
             try:
